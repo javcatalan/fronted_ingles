@@ -2,7 +2,7 @@
 const Chat = {
   history: [],
   chatXP: 0,
-  API_URL: 'https://tu-backend.onrender.com/api/chat',
+  API_URL: 'https://backend-ingles-kqui.onrender.com',
   SYSTEM_PROMPT: `You are Emma, a friendly and encouraging English teacher for Spanish-speaking students from Latin America. Your role is to:
 
 1. CONVERSE naturally in English with the student
