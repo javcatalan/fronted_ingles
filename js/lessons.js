@@ -184,14 +184,6 @@ async openLesson(id) {
   }
 },
 
-    // Update button
-    const btn = document.querySelector('.lesson-complete-btn .btn-primary');
-    if (btn) {
-      btn.textContent = '✓ ¡Lección completada!';
-      btn.disabled = true;
-      btn.className = 'btn-ghost';
-    }
-  },
 
   speak(text) {
     if ('speechSynthesis' in window) {
