@@ -2,8 +2,7 @@
 const Chat = {
   history: [],
   chatXP: 0,
-  API_URL: 'https://api.anthropic.com/v1/messages',
-
+  API_URL: 'https://tu-backend.onrender.com/api/chat',
   SYSTEM_PROMPT: `You are Emma, a friendly and encouraging English teacher for Spanish-speaking students from Latin America. Your role is to:
 
 1. CONVERSE naturally in English with the student
@@ -51,7 +50,9 @@ Never be harsh. Always celebrate effort and progress!`,
 
       const response = await fetch(this.API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+         },
         body: JSON.stringify({
           model: 'claude-sonnet-4-20250514',
           max_tokens: 400,
