@@ -1,5 +1,5 @@
 // ===== CONFIGURACIÓN SUPABASE =====
-const SUPABASE_URL = 'https://sffjbdluvalzjrhyeezq.supabase.co/rest/v1/';
+const SUPABASE_URL = 'https://sffjbdluvalzjrhyeezq.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmZmpiZGx1dmFsempyaHllZXpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxNzE0NDgsImV4cCI6MjA5NTc0NzQ0OH0.MZOo_M1aAZuNHClYEcbwZH-lhhaA9Vtnhg4YwIAACAs';
 
 // Cache local para no repetir consultas
