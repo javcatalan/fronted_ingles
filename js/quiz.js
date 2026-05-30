@@ -48,6 +48,9 @@ async start() {
   const count = activeQty ? parseInt(activeQty.dataset.qty) : 10;
 
   this.level = level;
+  this.current = 0;
+  this.score = 0;
+
   document.getElementById('quizContainer').innerHTML =
     '<p style="text-align:center;padding:60px;color:var(--text3);">Cargando preguntas...</p>';
 
@@ -55,33 +58,15 @@ async start() {
     this.questions = await DB.fetchQuizQuestions(level, count);
     if (!this.questions.length) {
       document.getElementById('quizContainer').innerHTML =
-        '<p style="text-align:center;color:var(--accent3);">No hay preguntas disponibles para este nivel.</p>';
+        '<p style="text-align:center;color:var(--accent3);">No hay preguntas para este nivel aún.</p>';
       return;
     }
-    this.current = 0;
-    this.score = 0;
     this.renderQuestion();
   } catch(e) {
     document.getElementById('quizContainer').innerHTML =
       '<p style="text-align:center;color:var(--accent3);">Error cargando preguntas. Intenta de nuevo.</p>';
   }
 },
-
-  start() {
-    const levelSelect = document.getElementById('quizLevel');
-    this.level = levelSelect ? levelSelect.value : 'beginner';
-    const pool = [...(QUIZ_QUESTIONS[this.level] || QUIZ_QUESTIONS.beginner)];
-    // Shuffle
-    for (let i = pool.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [pool[i], pool[j]] = [pool[j], pool[i]];
-    }
-    this.questions = pool.slice(0, 10);
-    this.current = 0;
-    this.score = 0;
-    this.answered = false;
-    this.renderQuestion();
-  },
 
   renderQuestion() {
     if (this.current >= this.questions.length) {
