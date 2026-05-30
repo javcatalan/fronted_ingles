@@ -26,23 +26,25 @@ const Cache = {
 
 // ===== API DE SUPABASE =====
 const DB = {
-  async fetchLessons(level) {
-    const cached = Cache.getLessons(level);
-    if (cached) return cached;
+async fetchLessons(level) {
+  const cached = Cache.getLessons(level);
+  if (cached && cached.length > 0) return cached;  // ← solo usar caché si tiene datos
 
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/lessons?level=eq.${level}&active=eq.true&order=id`,
-      {
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
-        }
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/lessons?level=eq.${level}&active=eq.true&order=id`,
+    {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
       }
-    );
-    const data = await res.json();
-    Cache.setLessons(level, data);
-    return data;
-  },
+    }
+  );
+  const data = await res.json();
+
+  if (data.length > 0) Cache.setLessons(level, data);  // ← solo cachear si hay datos
+
+  return data;
+},
 
   async fetchQuizQuestions(level, count = 10) {
     const res = await fetch(
