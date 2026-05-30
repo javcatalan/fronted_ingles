@@ -68,8 +68,9 @@ Never be harsh. Always celebrate effort and progress!`,
       }
 
       const data = await response.json();
-      const reply = data.content?.[0]?.text || "I'm having trouble responding right now. Please try again!";
-
+      //const reply = data.content?.[0]?.text || "I'm having trouble responding right now. Please try again!";
+      const reply = data.reply || "I'm having trouble responding right now. Please try again!";
+        
       this.history.push({ role: 'assistant', content: reply });
       this.addBotMessage(reply);
 
