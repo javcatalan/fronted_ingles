@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EnglishUp — Aprende inglés gratis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-brand">
+    <span class="brand-icon">🇺🇸</span>
+    <span class="brand-name">EnglishUp</span>
+  </div>
+  <div class="nav-links" id="navLinks">
+    <a href="#" class="nav-link active" data-page="home">Inicio</a>
+    <a href="#" class="nav-link" data-page="lessons">Lecciones</a>
+    <a href="#" class="nav-link" data-page="quiz">Quiz</a>
+    <a href="#" class="nav-link" data-page="chatbot">Chatbot IA</a>
+    <a href="#" class="nav-link" data-page="progress">Mi Progreso</a>
+  </div>
+  <div class="nav-user" id="navUser">
+    <button class="btn-login" id="btnOpenAuth">Iniciar sesión</button>
+  </div>
+</nav>
+
+<!-- PAGES -->
+<main id="appMain">
+
+  <!-- HOME PAGE -->
+  <section class="page active" id="page-home">
+    <div class="hero">
+      <div class="hero-badge">✦ Plataforma 100% gratuita</div>
+      <h1 class="hero-title">Aprende inglés<br><em>de verdad</em></h1>
+      <p class="hero-sub">Lecciones interactivas, quizzes, un chatbot con IA que te corrige y un sistema de puntos que te motiva a seguir.</p>
+      <div class="hero-ctas">
+        <button class="btn-primary" onclick="App.navigate('lessons')">Empezar gratis →</button>
+        <button class="btn-ghost" onclick="App.navigate('chatbot')">Hablar con la IA</button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><strong id="statUsers">1,240</strong><span>Estudiantes</span></div>
+        <div class="stat-div"></div>
+        <div class="stat"><strong>12</strong><span>Lecciones</span></div>
+        <div class="stat-div"></div>
+        <div class="stat"><strong>∞</strong><span>Práctica con IA</span></div>
+      </div>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card" onclick="App.navigate('lessons')">
+        <div class="feat-icon">📚</div>
+        <h3>Lecciones estructuradas</h3>
+        <p>Desde A1 hasta B2, con ejercicios interactivos en cada nivel.</p>
+        <span class="feat-link">Ver lecciones →</span>
+      </div>
+      <div class="feature-card" onclick="App.navigate('quiz')">
+        <div class="feat-icon">🧠</div>
+        <h3>Quizzes dinámicos</h3>
+        <p>Pon a prueba tu vocabulario y gramática con retroalimentación inmediata.</p>
+        <span class="feat-link">Empezar quiz →</span>
+      </div>
+      <div class="feature-card" onclick="App.navigate('chatbot')">
+        <div class="feat-icon">🤖</div>
+        <h3>Chatbot con IA</h3>
+        <p>Practica conversación real. La IA detecta tus errores y te ayuda a mejorar.</p>
+        <span class="feat-link">Conversar ahora →</span>
+      </div>
+      <div class="feature-card" onclick="App.navigate('progress')">
+        <div class="feat-icon">🏆</div>
+        <h3>Sistema de logros</h3>
+        <p>Gana puntos e insignias conforme avanzas. ¡La motivación importa!</p>
+        <span class="feat-link">Ver mis logros →</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- LESSONS PAGE -->
+  <section class="page" id="page-lessons">
+    <div class="page-header">
+      <h2>Lecciones</h2>
+      <p>Elige tu nivel y empieza a aprender</p>
+    </div>
+    <div class="level-tabs">
+      <button class="level-tab active" data-level="beginner">🌱 Principiante (A1-A2)</button>
+      <button class="level-tab" data-level="intermediate">🌿 Intermedio (B1)</button>
+      <button class="level-tab" data-level="advanced">🌳 Avanzado (B2)</button>
+    </div>
+    <div class="lessons-grid" id="lessonsGrid"></div>
+  </section>
+
+  <!-- LESSON DETAIL PAGE -->
+  <section class="page" id="page-lesson-detail">
+    <button class="btn-back" onclick="App.navigate('lessons')">← Volver</button>
+    <div id="lessonContent"></div>
+  </section>
+
+  <!-- QUIZ PAGE -->
+  <section class="page" id="page-quiz">
+    <div class="page-header">
+      <h2>Quiz de práctica</h2>
+      <p>Pon a prueba tu inglés</p>
+    </div>
+    <div id="quizContainer">
+      <div class="quiz-start">
+        <div class="quiz-icon">🎯</div>
+        <h3>¿Listo para el quiz?</h3>
+        <p>10 preguntas, vocabulario y gramática mixtos. Ganarás puntos por cada respuesta correcta.</p>
+        <div class="quiz-options">
+          <label>Selecciona nivel:
+            <select id="quizLevel">
+              <option value="beginner">Principiante</option>
+              <option value="intermediate">Intermedio</option>
+              <option value="advanced">Avanzado</option>
+            </select>
+          </label>
+        </div>
+        <button class="btn-primary" id="startQuizBtn">Comenzar quiz</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHATBOT PAGE -->
+  <section class="page" id="page-chatbot">
+    <div class="chat-layout">
+      <div class="chat-sidebar">
+        <div class="chat-info">
+          <div class="ai-avatar">🤖</div>
+          <h3>Coach Emma</h3>
+          <p>Tu profesora de inglés con IA. Conversa libremente y te corregiré cuando sea necesario.</p>
+        </div>
+        <div class="chat-tips">
+          <h4>💡 Sugerencias para practicar:</h4>
+          <button class="tip-btn" onclick="Chat.useSuggestion(this)">Tell me about your day</button>
+          <button class="tip-btn" onclick="Chat.useSuggestion(this)">What's your favorite food?</button>
+          <button class="tip-btn" onclick="Chat.useSuggestion(this)">Describe your hometown</button>
+          <button class="tip-btn" onclick="Chat.useSuggestion(this)">What do you do for fun?</button>
+        </div>
+        <div class="chat-score-box">
+          <span>Puntos ganados hoy</span>
+          <strong id="chatPoints">0</strong>
+        </div>
+      </div>
+      <div class="chat-main">
+        <div class="chat-messages" id="chatMessages">
+          <div class="msg msg-bot">
+            <div class="msg-avatar">🤖</div>
+            <div class="msg-bubble">
+              Hello! I'm Emma, your AI English coach. Let's practice together! Feel free to write anything in English — I'll help you if you make mistakes. What would you like to talk about today? 😊
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <div class="chat-input-row">
+            <input type="text" id="chatInput" placeholder="Write in English... (Escribe en inglés)" autocomplete="off" />
+            <button class="btn-send" id="sendBtn" onclick="Chat.send()">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+          <p class="chat-hint">Presiona Enter para enviar • La IA usa la API de Anthropic para corregirte</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROGRESS PAGE -->
+  <section class="page" id="page-progress">
+    <div class="page-header">
+      <h2>Mi Progreso</h2>
+      <p>Tu viaje de aprendizaje</p>
+    </div>
+    <div class="progress-layout">
+      <div class="progress-card main-card">
+        <div class="xp-display">
+          <div class="xp-circle">
+            <svg viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="54" fill="none" stroke="#1a1a2e" stroke-width="8"/>
+              <circle cx="60" cy="60" r="54" fill="none" stroke="var(--accent)" stroke-width="8"
+                stroke-dasharray="339" stroke-dashoffset="200" id="xpRing"
+                stroke-linecap="round" transform="rotate(-90 60 60)"/>
+            </svg>
+            <div class="xp-inner">
+              <strong id="xpAmount">0</strong>
+              <span>XP</span>
+            </div>
+          </div>
+          <div class="xp-info">
+            <h3 id="levelName">Novato</h3>
+            <p id="xpToNext">Necesitas 100 XP para subir de nivel</p>
+            <div class="xp-bar-wrap">
+              <div class="xp-bar" id="xpBar" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="progress-card stats-card">
+        <h3>📊 Estadísticas</h3>
+        <div class="stats-list" id="statsList">
+          <div class="stat-row"><span>Lecciones completadas</span><strong id="statLessons">0</strong></div>
+          <div class="stat-row"><span>Quizzes completados</span><strong id="statQuizzes">0</strong></div>
+          <div class="stat-row"><span>Mensajes al chatbot</span><strong id="statMessages">0</strong></div>
+          <div class="stat-row"><span>Racha actual</span><strong id="statStreak">0 días</strong></div>
+        </div>
+      </div>
+      <div class="progress-card badges-card">
+        <h3>🏅 Insignias</h3>
+        <div class="badges-grid" id="badgesGrid"></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <button class="modal-close" onclick="Auth.closeModal()">×</button>
+    <div class="modal-tabs">
+      <button class="modal-tab active" data-tab="login">Iniciar sesión</button>
+      <button class="modal-tab" data-tab="register">Registrarse</button>
+    </div>
+    <div class="modal-body" id="authLoginForm">
+      <h3>¡Bienvenido de vuelta!</h3>
+      <input type="email" id="loginEmail" placeholder="Correo electrónico" />
+      <input type="password" id="loginPassword" placeholder="Contraseña" />
+      <button class="btn-primary full-width" onclick="Auth.login()">Entrar</button>
+      <p class="modal-note">¿No tienes cuenta? <a href="#" onclick="Auth.switchTab('register')">Regístrate gratis</a></p>
+    </div>
+    <div class="modal-body hidden" id="authRegisterForm">
+      <h3>Crea tu cuenta gratis</h3>
+      <input type="text" id="regName" placeholder="Tu nombre" />
+      <input type="email" id="regEmail" placeholder="Correo electrónico" />
+      <input type="password" id="regPassword" placeholder="Contraseña (mínimo 6 caracteres)" />
+      <button class="btn-primary full-width" onclick="Auth.register()">Crear cuenta</button>
+      <p class="modal-note">¿Ya tienes cuenta? <a href="#" onclick="Auth.switchTab('login')">Inicia sesión</a></p>
+    </div>
+    <div class="modal-divider"><span>o continúa sin cuenta</span></div>
+    <button class="btn-ghost full-width" onclick="Auth.guest()">Explorar como invitado</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/lessons.js"></script>
+<script src="js/quiz.js"></script>
+<script src="js/chat.js"></script>
+<script src="js/progress.js"></script>
+</body>
+</html>
