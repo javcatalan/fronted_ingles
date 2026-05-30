@@ -27,9 +27,17 @@ const Lessons = {
     });
   },
 
-  renderLessons(level) {
-    const grid = document.getElementById('lessonsGrid');
-    const lessons = LESSONS_DATA[level] || [];
+  async renderLessons(level) {
+  const grid = document.getElementById('lessonsGrid');
+  grid.innerHTML = '<p style="color:var(--text3);padding:20px;">Cargando lecciones...</p>';
+
+  try {
+    const lessons = await DB.fetchLessons(level);
+
+    if (!lessons.length) {
+      grid.innerHTML = '<p style="color:var(--text3);">No hay lecciones disponibles aún.</p>';
+      return;
+    }
 
     grid.innerHTML = lessons.map(lesson => {
       const done = App.state.completedLessons.includes(lesson.id);
@@ -41,22 +49,25 @@ const Lessons = {
             <p>${lesson.description}</p>
             <div class="lesson-meta">
               <span class="lesson-xp">+${lesson.xp} XP</span>
-              <span class="lesson-time">⏱ ${lesson.time}</span>
+              <span class="lesson-time">⏱ ${lesson.time_minutes} min</span>
               ${done ? '<span class="lesson-done">✓ Completada</span>' : ''}
             </div>
           </div>
         </div>
       `;
     }).join('');
-  },
+  } catch(e) {
+    grid.innerHTML = '<p style="color:var(--accent3);">Error cargando lecciones. Intenta de nuevo.</p>';
+  }
+},
 
-  findLesson(id) {
-    for (const level of Object.values(LESSONS_DATA)) {
-      const found = level.find(l => l.id === id);
-      if (found) return found;
-    }
-    return null;
-  },
+async openLesson(id) {
+  const level = this.currentLevel;
+  const lessons = await DB.fetchLessons(level);
+  const lesson = lessons.find(l => l.id === id);
+  if (!lesson) return;
+  // ... resto igual que antes
+},
 
   openLesson(id) {
     const lesson = this.findLesson(id);

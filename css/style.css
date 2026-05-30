@@ -650,3 +650,25 @@ body::before {
   .chat-main { height: calc(100vh - var(--nav-h) - 80px); }
   .xp-display { flex-direction: column; text-align: center; }
 }
+
+.quantity-selector {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  justify-content: center;
+}
+.qty-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  background: var(--surface2);
+  color: var(--text2);
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.qty-btn:hover { border-color: var(--accent2); color: var(--text); }
+.qty-btn.active { border-color: var(--accent); background: rgba(79,255,176,0.1); color: var(--accent); }

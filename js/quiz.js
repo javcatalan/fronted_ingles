@@ -7,25 +7,65 @@ const Quiz = {
   level: 'beginner',
 
   reset() {
-    const container = document.getElementById('quizContainer');
-    container.innerHTML = `
-      <div class="quiz-start">
-        <div class="quiz-icon">🎯</div>
-        <h3>¿Listo para el quiz?</h3>
-        <p>10 preguntas de vocabulario y gramática. Ganarás puntos por cada respuesta correcta.</p>
-        <div class="quiz-options">
-          <label>Selecciona nivel:
-            <select id="quizLevel">
-              <option value="beginner">🌱 Principiante</option>
-              <option value="intermediate">🌿 Intermedio</option>
-              <option value="advanced">🌳 Avanzado</option>
-            </select>
-          </label>
-        </div>
-        <button class="btn-primary" id="startQuizBtn" onclick="Quiz.start()">Comenzar quiz</button>
+  document.getElementById('quizContainer').innerHTML = `
+    <div class="quiz-start">
+      <div class="quiz-icon">🎯</div>
+      <h3>¿Cuántas preguntas quieres practicar?</h3>
+      <p>Elige tu nivel y la cantidad de preguntas.</p>
+      <div class="quiz-options">
+        <label>Nivel:
+          <select id="quizLevel">
+            <option value="beginner">🌱 Principiante</option>
+            <option value="intermediate">🌿 Intermedio</option>
+            <option value="advanced">🌳 Avanzado</option>
+          </select>
+        </label>
+        <label style="margin-top:16px;">Número de preguntas:
+          <div class="quantity-selector">
+            <button class="qty-btn active" data-qty="5">5</button>
+            <button class="qty-btn" data-qty="10">10</button>
+            <button class="qty-btn" data-qty="20">20</button>
+            <button class="qty-btn" data-qty="50">50</button>
+          </div>
+        </label>
       </div>
-    `;
-  },
+      <button class="btn-primary" onclick="Quiz.start()">Comenzar →</button>
+    </div>
+  `;
+
+  // Selector de cantidad
+  document.querySelectorAll('.qty-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.qty-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+},
+
+async start() {
+  const level = document.getElementById('quizLevel').value;
+  const activeQty = document.querySelector('.qty-btn.active');
+  const count = activeQty ? parseInt(activeQty.dataset.qty) : 10;
+
+  this.level = level;
+  document.getElementById('quizContainer').innerHTML =
+    '<p style="text-align:center;padding:60px;color:var(--text3);">Cargando preguntas...</p>';
+
+  try {
+    this.questions = await DB.fetchQuizQuestions(level, count);
+    if (!this.questions.length) {
+      document.getElementById('quizContainer').innerHTML =
+        '<p style="text-align:center;color:var(--accent3);">No hay preguntas disponibles para este nivel.</p>';
+      return;
+    }
+    this.current = 0;
+    this.score = 0;
+    this.renderQuestion();
+  } catch(e) {
+    document.getElementById('quizContainer').innerHTML =
+      '<p style="text-align:center;color:var(--accent3);">Error cargando preguntas. Intenta de nuevo.</p>';
+  }
+},
 
   start() {
     const levelSelect = document.getElementById('quizLevel');
