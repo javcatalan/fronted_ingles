@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My servicio social de Javier — Aprende inglés gratis</title>
+  <title>EnglishUp — Aprende inglés gratis</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/vocabulary.css" />
 </head>
 <body>
 
@@ -15,17 +16,18 @@
 <nav class="navbar">
   <div class="nav-brand">
     <span class="brand-icon">🇺🇸</span>
-    <span class="brand-name">Ingles pacil y gratis</span>
+    <span class="brand-name">EnglishUp</span>
   </div>
   <div class="nav-links" id="navLinks">
     <a href="#" class="nav-link active" data-page="home">Inicio</a>
     <a href="#" class="nav-link" data-page="lessons">Lecciones</a>
     <a href="#" class="nav-link" data-page="quiz">Quiz</a>
+    <a href="#" class="nav-link" data-page="vocabulary">Vocabulario</a>
     <a href="#" class="nav-link" data-page="chatbot">Chatbot IA</a>
     <a href="#" class="nav-link" data-page="progress">Mi Progreso</a>
   </div>
   <div class="nav-user" id="navUser">
-    <button class="btn-login" id="btnOpenAuth">Animo</button>
+    <button class="btn-login" id="btnOpenAuth">Iniciar sesión</button>
   </div>
 </nav>
 
@@ -36,13 +38,14 @@
   <section class="page active" id="page-home">
     <div class="hero">
       <div class="hero-badge">✦ Plataforma 100% gratuita</div>
-      <h1 class="hero-title">Aprende inglés<br><em>gratis y sin anuncios</em></h1>
+      <h1 class="hero-title">Aprende inglés<br><em>de verdad</em></h1>
       <p class="hero-sub">Lecciones interactivas, quizzes, un chatbot con IA que te corrige y un sistema de puntos que te motiva a seguir.</p>
       <div class="hero-ctas">
         <button class="btn-primary" onclick="App.navigate('lessons')">Empezar gratis →</button>
         <button class="btn-ghost" onclick="App.navigate('chatbot')">Hablar con la IA</button>
       </div>
       <div class="hero-stats">
+        <div class="stat"><strong id="statUsers">1,240</strong><span>Estudiantes</span></div>
         <div class="stat-div"></div>
         <div class="stat"><strong>12</strong><span>Lecciones</span></div>
         <div class="stat-div"></div>
@@ -119,6 +122,65 @@
         </div>
         <button class="btn-primary" id="startQuizBtn">Comenzar quiz</button>
       </div>
+    </div>
+  </section>
+
+  <!-- VOCABULARY PAGE -->
+  <section class="page" id="page-vocabulary">
+    <div class="page-header">
+      <h2>Vocabulario</h2>
+      <p>Aprende palabras por categorías — elige cómo practicar</p>
+    </div>
+
+    <!-- Category grid -->
+    <div id="vocabCategories"></div>
+
+    <!-- Category detail -->
+    <div id="vocabDetail">
+      <div class="vocab-detail-header">
+        <button class="btn-back" onclick="Vocabulary.backToCategories()">← Categorías</button>
+        <h3 id="vocabDetailTitle"></h3>
+      </div>
+
+      <div class="vocab-mode-selector">
+        <h4>🎯 ¿Cómo quieres practicar?</h4>
+        <div class="vocab-modes">
+          <div class="vocab-mode-btn" onclick="Vocabulary.selectMode('flashcard')">
+            <div class="mode-icon">🃏</div>
+            <div class="mode-name">Flashcards</div>
+            <div class="mode-desc">Ve la palabra y recuerda su traducción</div>
+          </div>
+          <div class="vocab-mode-btn" onclick="Vocabulary.selectMode('matching')">
+            <div class="mode-icon">🔗</div>
+            <div class="mode-name">Matching</div>
+            <div class="mode-desc">Elige la traducción correcta entre opciones</div>
+          </div>
+          <div class="vocab-mode-btn" onclick="Vocabulary.selectMode('writing')">
+            <div class="mode-icon">✍️</div>
+            <div class="mode-name">Escritura</div>
+            <div class="mode-desc">Escribe la palabra en inglés</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="vocab-word-list-wrap">
+        <div id="vocabWordList"></div>
+      </div>
+    </div>
+
+    <!-- Practice mode -->
+    <div id="vocabPractice">
+      <div class="vocab-detail-header">
+        <button class="btn-back" onclick="Vocabulary.backToCategoryDetail()">← Volver</button>
+      </div>
+      <div class="vocab-practice-header">
+        <h3 id="vocabPracticeTitle"></h3>
+        <span id="vocabPracticeProgress" style="color:var(--text3);font-size:0.85rem;"></span>
+      </div>
+      <div class="vocab-practice-progress-wrap">
+        <div class="vocab-practice-bar" id="vocabPracticeBar" style="width:0%"></div>
+      </div>
+      <div id="vocabPracticeContent"></div>
     </div>
   </section>
 
@@ -250,6 +312,7 @@
 <script src="js/lessons.js"></script>
 <script src="js/quiz.js"></script>
 <script src="js/chat.js"></script>
+<script src="js/vocabulary.js"></script>
 <script src="js/progress.js"></script>
 </body>
 </html>

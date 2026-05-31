@@ -133,6 +133,7 @@ const App = {
     if (page === 'lessons') Lessons.init();
     if (page === 'progress') Progress.render();
     if (page === 'quiz') Quiz.reset();
+    if (page === 'vocabulary') Vocabulary.init();
 
     window.scrollTo(0, 0);
   },
