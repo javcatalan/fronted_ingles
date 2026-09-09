@@ -3,20 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EnglishUp — Aprende inglés gratis</title>
+  <title>Inglés Gratis para Todos — CEFODE</title>
+  <meta name="description" content="Aprende inglés gratis. Plataforma educativa voluntaria CEFODE para mexicanos." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/vocabulary.css" />
+  <link rel="stylesheet" href="css/ratings.css" />
 </head>
 <body>
 
 <!-- NAVBAR -->
 <nav class="navbar">
   <div class="nav-brand">
-    <span class="brand-icon">🇺🇸</span>
-    <span class="brand-name">EnglishUp</span>
+    <span class="brand-icon">🇲🇽</span>
+    <div class="brand-text">
+      <span class="brand-name">Inglés Gratis</span>
+      <span class="brand-sub">para todos</span>
+    </div>
   </div>
   <div class="nav-links" id="navLinks">
     <a href="#" class="nav-link active" data-page="home">Inicio</a>
@@ -24,34 +29,50 @@
     <a href="#" class="nav-link" data-page="quiz">Quiz</a>
     <a href="#" class="nav-link" data-page="vocabulary">Vocabulario</a>
     <a href="#" class="nav-link" data-page="chatbot">Chatbot IA</a>
+    <a href="#" class="nav-link" data-page="stats">Estadísticas</a>
     <a href="#" class="nav-link" data-page="progress">Mi Progreso</a>
   </div>
   <div class="nav-user" id="navUser">
-    <button class="btn-login" id="btnOpenAuth">Iniciar sesión</button>
+    <button class="btn-login" id="btnOpenAuth" onclick="Auth.openModal()">Iniciar sesión</button>
   </div>
 </nav>
 
-<!-- PAGES -->
+<!-- VOLUNTEER BANNER -->
+<div class="volunteer-banner">
+  <span>🤝 Soy voluntario <strong>CEFODE</strong> — Inglés gratuito para todos los mexicanos</span>
+  <a href="#" onclick="App.navigate('stats')" class="banner-link">Ver estadísticas →</a>
+</div>
+
 <main id="appMain">
 
   <!-- HOME PAGE -->
   <section class="page active" id="page-home">
     <div class="hero">
-      <div class="hero-badge">✦ Plataforma 100% gratuita</div>
-      <h1 class="hero-title">Aprende inglés<br><em>de verdad</em></h1>
-      <p class="hero-sub">Lecciones interactivas, quizzes, un chatbot con IA que te corrige y un sistema de puntos que te motiva a seguir.</p>
+      <div class="hero-badge">🇲🇽 Para mexicanos · 100% gratuito · Voluntario CEFODE</div>
+      <h1 class="hero-title">Inglés gratis<br><em>para todos</em></h1>
+      <p class="hero-sub">Una iniciativa voluntaria de CEFODE. Lecciones interactivas, quizzes, vocabulario y un chatbot con IA que te corrige — sin costo, sin trampa.</p>
       <div class="hero-ctas">
         <button class="btn-primary" onclick="App.navigate('lessons')">Empezar gratis →</button>
         <button class="btn-ghost" onclick="App.navigate('chatbot')">Hablar con la IA</button>
       </div>
       <div class="hero-stats">
-        <div class="stat"><strong id="statUsers">1,240</strong><span>Estudiantes</span></div>
+        <div class="stat"><strong id="statUsers">—</strong><span>Visitantes</span></div>
         <div class="stat-div"></div>
-        <div class="stat"><strong>12</strong><span>Lecciones</span></div>
+        <div class="stat"><strong id="statLessonsHome">—</strong><span>Lecciones tomadas</span></div>
         <div class="stat-div"></div>
-        <div class="stat"><strong>∞</strong><span>Práctica con IA</span></div>
+        <div class="stat"><strong id="statRatingHome">—</strong><span>Calificación promedio</span></div>
       </div>
     </div>
+
+    <!-- REVIEWS WALL -->
+    <div class="reviews-section">
+      <h2 class="section-title">💬 Lo que dicen los estudiantes</h2>
+      <p class="section-sub">Reseñas reales de personas que usaron la plataforma</p>
+      <div class="reviews-grid" id="reviewsGrid">
+        <div class="review-loading">Cargando reseñas...</div>
+      </div>
+    </div>
+
     <div class="features-grid">
       <div class="feature-card" onclick="App.navigate('lessons')">
         <div class="feat-icon">📚</div>
@@ -71,12 +92,22 @@
         <p>Practica conversación real. La IA detecta tus errores y te ayuda a mejorar.</p>
         <span class="feat-link">Conversar ahora →</span>
       </div>
-      <div class="feature-card" onclick="App.navigate('progress')">
-        <div class="feat-icon">🏆</div>
-        <h3>Sistema de logros</h3>
-        <p>Gana puntos e insignias conforme avanzas. ¡La motivación importa!</p>
-        <span class="feat-link">Ver mis logros →</span>
+      <div class="feature-card" onclick="App.navigate('vocabulary')">
+        <div class="feat-icon">📝</div>
+        <h3>Vocabulario por temas</h3>
+        <p>Aprende palabras organizadas por categorías con 3 modos de práctica.</p>
+        <span class="feat-link">Explorar vocabulario →</span>
       </div>
+    </div>
+
+    <!-- CEFODE INFO -->
+    <div class="cefode-banner">
+      <div class="cefode-icon">🤝</div>
+      <div class="cefode-text">
+        <h3>Iniciativa voluntaria CEFODE</h3>
+        <p>Esta plataforma fue creada de forma voluntaria para ayudar a mexicanos a aprender inglés sin costo. Si te fue útil, compártela con alguien más.</p>
+      </div>
+      <button class="btn-ghost" onclick="Share.open()">Compartir →</button>
     </div>
   </section>
 
@@ -106,23 +137,7 @@
       <h2>Quiz de práctica</h2>
       <p>Pon a prueba tu inglés</p>
     </div>
-    <div id="quizContainer">
-      <div class="quiz-start">
-        <div class="quiz-icon">🎯</div>
-        <h3>¿Listo para el quiz?</h3>
-        <p>10 preguntas, vocabulario y gramática mixtos. Ganarás puntos por cada respuesta correcta.</p>
-        <div class="quiz-options">
-          <label>Selecciona nivel:
-            <select id="quizLevel">
-              <option value="beginner">Principiante</option>
-              <option value="intermediate">Intermedio</option>
-              <option value="advanced">Avanzado</option>
-            </select>
-          </label>
-        </div>
-        <button class="btn-primary" id="startQuizBtn">Comenzar quiz</button>
-      </div>
-    </div>
+    <div id="quizContainer"></div>
   </section>
 
   <!-- VOCABULARY PAGE -->
@@ -131,17 +146,12 @@
       <h2>Vocabulario</h2>
       <p>Aprende palabras por categorías — elige cómo practicar</p>
     </div>
-
-    <!-- Category grid -->
     <div id="vocabCategories"></div>
-
-    <!-- Category detail -->
     <div id="vocabDetail">
       <div class="vocab-detail-header">
         <button class="btn-back" onclick="Vocabulary.backToCategories()">← Categorías</button>
         <h3 id="vocabDetailTitle"></h3>
       </div>
-
       <div class="vocab-mode-selector">
         <h4>🎯 ¿Cómo quieres practicar?</h4>
         <div class="vocab-modes">
@@ -162,13 +172,10 @@
           </div>
         </div>
       </div>
-
       <div class="vocab-word-list-wrap">
         <div id="vocabWordList"></div>
       </div>
     </div>
-
-    <!-- Practice mode -->
     <div id="vocabPractice">
       <div class="vocab-detail-header">
         <button class="btn-back" onclick="Vocabulary.backToCategoryDetail()">← Volver</button>
@@ -194,7 +201,7 @@
           <p>Tu profesora de inglés con IA. Conversa libremente y te corregiré cuando sea necesario.</p>
         </div>
         <div class="chat-tips">
-          <h4>💡 Sugerencias para practicar:</h4>
+          <h4>💡 Sugerencias:</h4>
           <button class="tip-btn" onclick="Chat.useSuggestion(this)">Tell me about your day</button>
           <button class="tip-btn" onclick="Chat.useSuggestion(this)">What's your favorite food?</button>
           <button class="tip-btn" onclick="Chat.useSuggestion(this)">Describe your hometown</button>
@@ -210,19 +217,61 @@
           <div class="msg msg-bot">
             <div class="msg-avatar">🤖</div>
             <div class="msg-bubble">
-              Hello! I'm Emma, your AI English coach. Let's practice together! Feel free to write anything in English — I'll help you if you make mistakes. What would you like to talk about today? 😊
+              ¡Hola! Soy Emma, tu profesora de inglés con IA. ¡Vamos a practicar juntos! Escríbeme cualquier cosa en inglés — te ayudaré si cometes errores. 😊
             </div>
           </div>
         </div>
         <div class="chat-input-area">
           <div class="chat-input-row">
-            <input type="text" id="chatInput" placeholder="Write in English... (Escribe en inglés)" autocomplete="off" />
+            <input type="text" id="chatInput" placeholder="Escribe en inglés... (Write in English)" autocomplete="off" />
             <button class="btn-send" id="sendBtn" onclick="Chat.send()">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
             </button>
           </div>
-          <p class="chat-hint">Presiona Enter para enviar • La IA usa la API de Anthropic para corregirte</p>
+          <p class="chat-hint">Presiona Enter para enviar</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS PAGE -->
+  <section class="page" id="page-stats">
+    <div class="page-header">
+      <h2>📊 Estadísticas</h2>
+      <p>Impacto real de la plataforma — actualizado en tiempo real</p>
+    </div>
+    <div class="stats-dashboard" id="statsDashboard">
+      <div class="stat-big-card">
+        <div class="stat-big-icon">👥</div>
+        <div class="stat-big-num" id="sdVisitors">—</div>
+        <div class="stat-big-label">Visitantes totales</div>
+      </div>
+      <div class="stat-big-card">
+        <div class="stat-big-icon">📚</div>
+        <div class="stat-big-num" id="sdLessons">—</div>
+        <div class="stat-big-label">Lecciones completadas</div>
+      </div>
+      <div class="stat-big-card">
+        <div class="stat-big-icon">💬</div>
+        <div class="stat-big-num" id="sdMessages">—</div>
+        <div class="stat-big-label">Mensajes al chatbot</div>
+      </div>
+      <div class="stat-big-card">
+        <div class="stat-big-icon">⭐</div>
+        <div class="stat-big-num" id="sdRating">—</div>
+        <div class="stat-big-label">Calificación promedio</div>
+      </div>
+    </div>
+
+    <div class="stats-section">
+      <h3>⭐ Calificaciones por lección</h3>
+      <div id="lessonRatingsTable"></div>
+    </div>
+
+    <div class="stats-section">
+      <h3>💬 Últimas reseñas</h3>
+      <div class="reviews-grid" id="statsReviewsGrid">
+        <div class="review-loading">Cargando reseñas...</div>
       </div>
     </div>
   </section>
@@ -259,7 +308,7 @@
       </div>
       <div class="progress-card stats-card">
         <h3>📊 Estadísticas</h3>
-        <div class="stats-list" id="statsList">
+        <div class="stats-list">
           <div class="stat-row"><span>Lecciones completadas</span><strong id="statLessons">0</strong></div>
           <div class="stat-row"><span>Quizzes completados</span><strong id="statQuizzes">0</strong></div>
           <div class="stat-row"><span>Mensajes al chatbot</span><strong id="statMessages">0</strong></div>
@@ -274,6 +323,45 @@
   </section>
 
 </main>
+
+<!-- RATING MODAL -->
+<div class="modal-overlay" id="ratingModal">
+  <div class="modal rating-modal">
+    <div class="rating-modal-top">
+      <div class="rating-lesson-icon" id="ratingLessonIcon">📚</div>
+      <h3>¿Cómo estuvo esta lección?</h3>
+      <p id="ratingLessonName">Nombre de la lección</p>
+    </div>
+    <div class="star-selector" id="starSelector">
+      <span class="star" data-star="1">★</span>
+      <span class="star" data-star="2">★</span>
+      <span class="star" data-star="3">★</span>
+      <span class="star" data-star="4">★</span>
+      <span class="star" data-star="5">★</span>
+    </div>
+    <div class="rating-labels">
+      <span>Muy mala</span><span>Excelente</span>
+    </div>
+    <input type="text" id="ratingName" placeholder="Tu nombre (opcional)" maxlength="40" />
+    <textarea id="ratingComment" placeholder="¿Qué te pareció? (opcional)" rows="3" maxlength="300"></textarea>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn-primary full-width" onclick="Ratings.submit()">Enviar calificación ⭐</button>
+      <button class="btn-ghost" onclick="Ratings.close()" style="padding:12px 16px">Saltar</button>
+    </div>
+  </div>
+</div>
+
+<!-- SHARE MODAL -->
+<div class="modal-overlay" id="shareModal">
+  <div class="modal" style="text-align:center">
+    <button class="modal-close" onclick="Share.close()">×</button>
+    <h3 style="font-family:var(--font-display);font-size:1.3rem;font-weight:800;margin-bottom:8px">Comparte la plataforma 🇲🇽</h3>
+    <p style="color:var(--text2);font-size:0.9rem;margin-bottom:20px">Ayuda a más mexicanos a aprender inglés gratis</p>
+    <div class="share-url-box" id="shareUrlBox">https://javcatalan.github.io/englishup/</div>
+    <button class="btn-primary full-width" onclick="Share.copy()" style="margin-top:12px">📋 Copiar enlace</button>
+    <p style="font-size:0.8rem;color:var(--text3);margin-top:12px">Iniciativa voluntaria CEFODE · Sin fines de lucro</p>
+  </div>
+</div>
 
 <!-- AUTH MODAL -->
 <div class="modal-overlay" id="authModal">
@@ -303,7 +391,6 @@
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script src="js/data.js"></script>
@@ -313,6 +400,7 @@
 <script src="js/quiz.js"></script>
 <script src="js/chat.js"></script>
 <script src="js/vocabulary.js"></script>
+<script src="js/ratings.js"></script>
 <script src="js/progress.js"></script>
 </body>
 </html>
