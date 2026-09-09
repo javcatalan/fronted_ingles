@@ -133,7 +133,7 @@ async start() {
     this.current++;
     this.renderQuestion();
   },
-
+/*
   showResult() {
     const total = this.questions.length;
     const pct = Math.round((this.score / total) * 100);
@@ -169,3 +169,50 @@ async start() {
     App.checkBadges();
   },
 };
+*/
+
+showResult() {
+  const total = this.questions.length;
+  const pct = Math.round((this.score / total) * 100);
+  let emoji, msg;
+
+  if (pct === 100) { emoji = '🏆'; msg = '¡Perfecto! Eres increíble.'; }
+  else if (pct >= 80) { emoji = '⭐'; msg = '¡Excelente trabajo!'; }
+  else if (pct >= 60) { emoji = '👍'; msg = 'Bien hecho. ¡Sigue practicando!'; }
+  else if (pct >= 40) { emoji = '📚'; msg = 'Necesitas repasar un poco más.'; }
+  else { emoji = '💪'; msg = '¡No te rindas! El inglés toma tiempo.'; }
+
+  const xpEarned = this.score * 5;
+  const levelNames = { beginner: 'Principiante', intermediate: 'Intermedio', advanced: 'Avanzado' };
+
+  document.getElementById('quizContainer').innerHTML = `
+    <div class="quiz-result">
+      <div class="result-emoji">${emoji}</div>
+      <div class="result-score">${this.score}/${total}</div>
+      <h3>${msg}</h3>
+      <p>Respondiste <strong>${this.score} de ${total}</strong> preguntas correctamente (${pct}%)<br>
+         <span style="color:var(--accent)">+${xpEarned} XP ganados</span></p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn-primary" onclick="Quiz.reset()">Intentar de nuevo</button>
+        <button class="btn-ghost" onclick="App.navigate('lessons')">Ir a lecciones</button>
+      </div>
+    </div>
+  `;
+
+  // Update state
+  App.state.quizzesCompleted++;
+  if (pct === 100) App.state.perfectQuiz = true;
+  App.saveState();
+  App.addXP(xpEarned, `Quiz de ${this.level} completado`);
+  App.checkBadges();
+
+  // Mostrar modal de calificación de la plataforma
+  setTimeout(() => {
+    Ratings.showModal(
+      `quiz_${this.level}`,
+      `Quiz ${levelNames[this.level] || this.level} (${this.score}/${total})`,
+      '🧠'
+    );
+  }, 800);
+}
+}
