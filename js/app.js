@@ -126,25 +126,26 @@ if (beginnerLessons.length >= 4 && !s.badges.includes('all_beginner')) {
   },
 
   navigate(page) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
 
-    const pageEl = document.getElementById(`page-${page}`);
-    if (pageEl) {
-      pageEl.classList.add('active');
-      this.currentPage = page;
-    }
+  const pageEl = document.getElementById(`page-${page}`);
+  if (pageEl) {
+    pageEl.classList.add('active');
+    this.currentPage = page;
+  }
 
-    const navLink = document.querySelector(`.nav-link[data-page="${page}"]`);
-    if (navLink) navLink.classList.add('active');
+  const navLink = document.querySelector(`.nav-link[data-page="${page}"]`);
+  if (navLink) navLink.classList.add('active');
 
-    if (page === 'lessons') Lessons.init();
-    if (page === 'progress') Progress.render();
-    if (page === 'quiz') Quiz.reset();
-    if (page === 'vocabulary') Vocabulary.init();
+  if (page === 'lessons')    Lessons.init();
+  if (page === 'progress')   Progress.render();
+  if (page === 'quiz')       Quiz.reset();
+  if (page === 'vocabulary') Vocabulary.init();
+  if (page === 'stats')      Stats.init();
 
-    window.scrollTo(0, 0);
-  },
+  window.scrollTo(0, 0);
+},
 };
 
 // ===== TOAST =====

@@ -50,7 +50,7 @@
     <div class="hero">
       <div class="hero-badge">🇲🇽 Para mexicanos · 100% gratuito · Voluntario CEFODE</div>
       <h1 class="hero-title">Inglés gratis<br><em>para todos</em></h1>
-      <p class="hero-sub">Una iniciativa voluntaria de CEFODE. Lecciones interactivas, quizzes, vocabulario y un chatbot con IA que te corrige — sin costo, sin trampa.</p>
+      <p class="hero-sub">Una iniciativa voluntaria de CEFODE. Lecciones interactivas, quizzes, vocabulario — sin costo.</p>
       <div class="hero-ctas">
         <button class="btn-primary" onclick="App.navigate('lessons')">Empezar gratis →</button>
         <button class="btn-ghost" onclick="App.navigate('chatbot')">Hablar con la IA</button>
@@ -402,5 +402,12 @@
 <script src="js/vocabulary.js"></script>
 <script src="js/ratings.js"></script>
 <script src="js/progress.js"></script>
+
+<script>
+  // Recargar stats cada vez que se hace clic en el link
+  document.querySelector('[data-page="stats"]').addEventListener('click', () => {
+    setTimeout(() => Stats.init(), 100);
+  });
+</script>
 </body>
 </html>
