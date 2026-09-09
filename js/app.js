@@ -65,10 +65,18 @@ const App = {
     if (s.xp >= 500 && !s.badges.includes('xp_500')) earned.push('xp_500');
     if (s.streak >= 3 && !s.badges.includes('streak_3')) earned.push('streak_3');
     if (s.perfectQuiz && !s.badges.includes('perfect_quiz')) earned.push('perfect_quiz');
-
+/*
     const beginnerDone = LESSONS_DATA.beginner.every(l => s.completedLessons.includes(l.id));
     if (beginnerDone && !s.badges.includes('all_beginner')) earned.push('all_beginner');
+*/
 
+// REEMPLAZA POR esto:
+// La insignia all_beginner se otorga al completar 4+ lecciones de principiante
+const beginnerLessons = s.completedLessons.filter(id => id.startsWith('b'));
+if (beginnerLessons.length >= 4 && !s.badges.includes('all_beginner')) {
+  earned.push('all_beginner');
+}
+/////
     const allLevels = ['beginner', 'intermediate', 'advanced'];
     if (allLevels.every(l => s.levelsVisited && s.levelsVisited.includes(l)) && !s.badges.includes('explorer')) {
       earned.push('explorer');
