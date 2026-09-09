@@ -16,7 +16,6 @@ const Lessons = {
         this.currentLevel = level;
         this.renderLessons(level);
 
-        // Track visited levels
         if (!App.state.levelsVisited) App.state.levelsVisited = [];
         if (!App.state.levelsVisited.includes(level)) {
           App.state.levelsVisited.push(level);
@@ -27,77 +26,51 @@ const Lessons = {
     });
   },
 
-  /*
-  renderLessons(level) {
+  async renderLessons(level) {
     const grid = document.getElementById('lessonsGrid');
-    const lessons = LESSONS_DATA[level] || [];
-
-    grid.innerHTML = lessons.map(lesson => {
-      const done = App.state.completedLessons.includes(lesson.id);
-      return `
-        <div class="lesson-card ${done ? 'completed' : ''}" onclick="Lessons.openLesson('${lesson.id}')">
-          <div class="lesson-icon">${lesson.icon}</div>
-          <div class="lesson-info">
-            <h4>${lesson.title}</h4>
-            <p>${lesson.description}</p>
-            <div class="lesson-meta">
-              <span class="lesson-xp">+${lesson.xp} XP</span>
-              <span class="lesson-time">⏱ ${lesson.time}</span>
-              ${done ? '<span class="lesson-done">✓ Completada</span>' : ''}
+    grid.innerHTML = '<p style="color:var(--text3);padding:20px;">Cargando lecciones...</p>';
+    try {
+      const lessons = await DB.fetchLessons(level);
+      if (!lessons.length) {
+        grid.innerHTML = '<p style="color:var(--text3);">No hay lecciones disponibles aún.</p>';
+        return;
+      }
+      grid.innerHTML = lessons.map(lesson => {
+        const done = App.state.completedLessons.includes(lesson.id);
+        return `
+          <div class="lesson-card ${done ? 'completed' : ''}" onclick="Lessons.openLesson('${lesson.id}')">
+            <div class="lesson-icon">${lesson.icon}</div>
+            <div class="lesson-info">
+              <h4>${lesson.title}</h4>
+              <p>${lesson.description}</p>
+              <div class="lesson-meta">
+                <span class="lesson-xp">+${lesson.xp} XP</span>
+                <span class="lesson-time">⏱ ${lesson.time_minutes} min</span>
+                ${done ? '<span class="lesson-done">✓ Completada</span>' : ''}
+              </div>
             </div>
           </div>
-        </div>
-      `;
-    }).join('');
-  },
-*/
-// NUEVO — consulta Supabase:
-async renderLessons(level) {
-  const grid = document.getElementById('lessonsGrid');
-  grid.innerHTML = '<p style="color:var(--text3);padding:20px;">Cargando lecciones...</p>';
-
-  try {
-    const lessons = await DB.fetchLessons(level);
-
-    if (!lessons.length) {
-      grid.innerHTML = '<p style="color:var(--text3);">No hay lecciones disponibles aún.</p>';
-      return;
+        `;
+      }).join('');
+    } catch(e) {
+      grid.innerHTML = '<p style="color:var(--accent3);">Error cargando lecciones. Intenta de nuevo.</p>';
     }
-
-    grid.innerHTML = lessons.map(lesson => {
-      const done = App.state.completedLessons.includes(lesson.id);
-      return `
-        <div class="lesson-card ${done ? 'completed' : ''}" onclick="Lessons.openLesson('${lesson.id}')">
-          <div class="lesson-icon">${lesson.icon}</div>
-          <div class="lesson-info">
-            <h4>${lesson.title}</h4>
-            <p>${lesson.description}</p>
-            <div class="lesson-meta">
-              <span class="lesson-xp">+${lesson.xp} XP</span>
-              <span class="lesson-time">⏱ ${lesson.time_minutes} min</span>
-              ${done ? '<span class="lesson-done">✓ Completada</span>' : ''}
-            </div>
-          </div>
-        </div>
-      `;
-    }).join('');
-  } catch(e) {
-    grid.innerHTML = '<p style="color:var(--accent3);">Error cargando lecciones. Intenta de nuevo.</p>';
-  }
-},
-//////
-
-  findLesson(id) {
-    for (const level of Object.values(LESSONS_DATA)) {
-      const found = level.find(l => l.id === id);
-      if (found) return found;
-    }
-    return null;
   },
 
-  openLesson(id) {
-    const lesson = this.findLesson(id);
+  async openLesson(id) {
+    // Fetch from Supabase
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/lessons?id=eq.${id}&limit=1`,
+      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+    );
+    const data = await res.json();
+    const lesson = data[0];
     if (!lesson) return;
+
+    // Parse JSON fields if they come as strings
+    const vocabulary = typeof lesson.vocabulary === 'string' ? JSON.parse(lesson.vocabulary) : (lesson.vocabulary || []);
+    const grammar    = typeof lesson.grammar    === 'string' ? JSON.parse(lesson.grammar)    : (lesson.grammar    || []);
+    const exercises  = typeof lesson.exercises  === 'string' ? JSON.parse(lesson.exercises)  : (lesson.exercises  || []);
 
     const container = document.getElementById('lessonContent');
     const done = App.state.completedLessons.includes(id);
@@ -112,7 +85,7 @@ async renderLessons(level) {
         <div class="lesson-section">
           <h3>📖 Vocabulario clave</h3>
           <div class="vocab-grid">
-            ${lesson.vocabulary.map(v => `
+            ${vocabulary.map(v => `
               <div class="vocab-card" onclick="Lessons.speak('${v.en}')">
                 <div class="vocab-en">${v.en}</div>
                 <div class="vocab-es">${v.es}</div>
@@ -125,7 +98,7 @@ async renderLessons(level) {
 
         <div class="lesson-section">
           <h3>📝 Gramática</h3>
-          ${lesson.grammar.map(g => `
+          ${grammar.map(g => `
             <div class="grammar-box">
               <h4>${g.title}</h4>
               <p>${g.explanation}</p>
@@ -136,15 +109,15 @@ async renderLessons(level) {
 
         <div class="lesson-section">
           <h3>✏️ Ejercicios</h3>
-          <div class="exercise-area" id="exerciseArea">
-            ${lesson.exercises.map((ex, i) => `
+          <div class="exercise-area">
+            ${exercises.map((ex, i) => `
               <div class="exercise-item" id="ex-${i}">
                 <p><strong>${i + 1}.</strong> ${ex.prompt}</p>
-                <input type="text" placeholder="Tu respuesta aquí..." id="exInput-${i}" 
-                  onkeydown="if(event.key==='Enter') Lessons.checkExercise(${i}, '${this.escapeStr(ex.answer)}', '${this.escapeStr(ex.hint)}')" />
+                <input type="text" placeholder="Tu respuesta aquí..." id="exInput-${i}"
+                  onkeydown="if(event.key==='Enter') Lessons.checkExercise(${i}, '${this.escapeStr(ex.answer)}', '${this.escapeStr(ex.hint || '')}')" />
                 <div class="exercise-feedback" id="exFb-${i}"></div>
-                <button class="btn-ghost" style="margin-top:8px;padding:6px 14px;font-size:0.8rem;" 
-                  onclick="Lessons.checkExercise(${i}, '${this.escapeStr(ex.answer)}', '${this.escapeStr(ex.hint)}')">Verificar</button>
+                <button class="btn-ghost" style="margin-top:8px;padding:6px 14px;font-size:0.8rem;"
+                  onclick="Lessons.checkExercise(${i}, '${this.escapeStr(ex.answer)}', '${this.escapeStr(ex.hint || '')}')">Verificar</button>
               </div>
             `).join('')}
           </div>
@@ -153,20 +126,22 @@ async renderLessons(level) {
         <div class="lesson-complete-btn">
           ${done
             ? `<button class="btn-ghost" disabled>✓ Ya completaste esta lección</button>`
-            : `<button class="btn-primary" onclick="Lessons.complete('${id}', ${lesson.xp}, '${lesson.title}', '${lesson.icon}')">Marcar como completada → +${lesson.xp} XP</button>`
+            : `<button class="btn-primary" onclick="Lessons.complete('${id}', ${lesson.xp}, '${this.escapeStr(lesson.title)}', '${lesson.icon}')">
+                 Marcar como completada → +${lesson.xp} XP
+               </button>`
           }
           <button class="btn-ghost" onclick="App.navigate('lessons')">Volver a lecciones</button>
         </div>
       </div>
     `;
 
-    // Show lesson detail page
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('page-lesson-detail').classList.add('active');
     window.scrollTo(0, 0);
   },
 
   escapeStr(str) {
+    if (!str) return '';
     return str.replace(/'/g, "\\'").replace(/"/g, '\\"');
   },
 
@@ -183,7 +158,6 @@ async renderLessons(level) {
     } else {
       input.className = 'wrong';
       fb.className = 'exercise-feedback err';
-      // Partial credit / hint
       const words = correctAns.split(' ');
       const userWords = userAns.split(' ');
       const closeEnough = words.filter(w => userWords.some(uw => uw.includes(w.slice(0,3)))).length > words.length / 2;
@@ -203,7 +177,6 @@ async renderLessons(level) {
     App.addXP(xp || 20, `Lección "${title}" completada`);
     App.checkBadges();
 
-    // Update button
     const btn = document.querySelector('.lesson-complete-btn .btn-primary');
     if (btn) {
       btn.textContent = '✓ ¡Lección completada!';
@@ -211,7 +184,7 @@ async renderLessons(level) {
       btn.className = 'btn-ghost';
     }
 
-    // Show rating modal after short delay
+    // Mostrar modal de calificación
     setTimeout(() => {
       Ratings.showModal(id, title || 'Lección', icon || '📚');
     }, 800);
