@@ -55,12 +55,15 @@ const Lessons = {
 async renderLessons(level) {
   const grid = document.getElementById('lessonsGrid');
   grid.innerHTML = '<p style="color:var(--text3);padding:20px;">Cargando lecciones...</p>';
+
   try {
     const lessons = await DB.fetchLessons(level);
+
     if (!lessons.length) {
       grid.innerHTML = '<p style="color:var(--text3);">No hay lecciones disponibles aún.</p>';
       return;
     }
+
     grid.innerHTML = lessons.map(lesson => {
       const done = App.state.completedLessons.includes(lesson.id);
       return `
@@ -79,7 +82,7 @@ async renderLessons(level) {
       `;
     }).join('');
   } catch(e) {
-    grid.innerHTML = '<p style="color:var(--accent3);">Error cargando lecciones.</p>';
+    grid.innerHTML = '<p style="color:var(--accent3);">Error cargando lecciones. Intenta de nuevo.</p>';
   }
 },
 //////
