@@ -27,6 +27,7 @@ const Lessons = {
     });
   },
 
+  /*
   renderLessons(level) {
     const grid = document.getElementById('lessonsGrid');
     const lessons = LESSONS_DATA[level] || [];
@@ -49,6 +50,39 @@ const Lessons = {
       `;
     }).join('');
   },
+*/
+// NUEVO — consulta Supabase:
+async renderLessons(level) {
+  const grid = document.getElementById('lessonsGrid');
+  grid.innerHTML = '<p style="color:var(--text3);padding:20px;">Cargando lecciones...</p>';
+  try {
+    const lessons = await DB.fetchLessons(level);
+    if (!lessons.length) {
+      grid.innerHTML = '<p style="color:var(--text3);">No hay lecciones disponibles aún.</p>';
+      return;
+    }
+    grid.innerHTML = lessons.map(lesson => {
+      const done = App.state.completedLessons.includes(lesson.id);
+      return `
+        <div class="lesson-card ${done ? 'completed' : ''}" onclick="Lessons.openLesson('${lesson.id}')">
+          <div class="lesson-icon">${lesson.icon}</div>
+          <div class="lesson-info">
+            <h4>${lesson.title}</h4>
+            <p>${lesson.description}</p>
+            <div class="lesson-meta">
+              <span class="lesson-xp">+${lesson.xp} XP</span>
+              <span class="lesson-time">⏱ ${lesson.time_minutes} min</span>
+              ${done ? '<span class="lesson-done">✓ Completada</span>' : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch(e) {
+    grid.innerHTML = '<p style="color:var(--accent3);">Error cargando lecciones.</p>';
+  }
+},
+//////
 
   findLesson(id) {
     for (const level of Object.values(LESSONS_DATA)) {

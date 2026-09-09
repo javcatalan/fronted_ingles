@@ -174,6 +174,7 @@ const Stats = {
         this.setEl('sdRating', 'Sin reseñas aún');
       }
 
+      /*
       // Progress stats
       const progRes = await fetch(
         `${SUPABASE_URL}/rest/v1/progress?select=quizzes_completed,chat_messages`,
@@ -184,6 +185,27 @@ const Stats = {
       const totalMessages = progs.reduce((s, p) => s + (p.chat_messages || 0), 0);
       this.setEl('sdLessons', totalQuizzes.toLocaleString('es-MX'));
       this.setEl('sdMessages', totalMessages.toLocaleString('es-MX'));
+*/
+// Por esto:
+try {
+  const progRes = await fetch(
+    `${SUPABASE_URL}/rest/v1/progress?select=quizzes_completed,chat_messages`,
+    { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+  );
+  const progs = await progRes.json();
+  if (Array.isArray(progs)) {
+    const totalQuizzes = progs.reduce((s, p) => s + (p.quizzes_completed || 0), 0);
+    const totalMessages = progs.reduce((s, p) => s + (p.chat_messages || 0), 0);
+    this.setEl('sdLessons', totalQuizzes.toLocaleString('es-MX'));
+    this.setEl('sdMessages', totalMessages.toLocaleString('es-MX'));
+  } else {
+    this.setEl('sdLessons', '0');
+    this.setEl('sdMessages', '0');
+  }
+} catch(e) {
+  this.setEl('sdLessons', '0');
+  this.setEl('sdMessages', '0');
+}
 
     } catch(e) {
       console.error('Stats error:', e);
