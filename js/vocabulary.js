@@ -327,49 +327,58 @@ const Vocabulary = {
     return matches / longer.length;
   },
 
-  showPracticeResult() {
-    const total = this.practiceWords.length;
-    const pct = Math.round((this.practiceScore / total) * 100);
-    const cat = this.CATEGORIES.find(c => c.id === this.currentCategory);
-    const xpEarned = this.practiceScore * 3;
+showPracticeResult() {
+  const total = this.practiceWords.length;
+  const pct = Math.round((this.practiceScore / total) * 100);
+  const cat = this.CATEGORIES.find(c => c.id === this.currentCategory);
+  const xpEarned = this.practiceScore * 3;
 
-    let emoji, msg;
-    if (pct === 100) { emoji = '🏆'; msg = '¡Perfecto! ¡Las conoces todas!'; }
-    else if (pct >= 70) { emoji = '⭐'; msg = '¡Muy bien! Sigue practicando.'; }
-    else { emoji = '💪'; msg = 'Sigue practicando, ¡vas mejorando!'; }
+  let emoji, msg;
+  if (pct === 100) { emoji = '🏆'; msg = '¡Perfecto! ¡Las conoces todas!'; }
+  else if (pct >= 70) { emoji = '⭐'; msg = '¡Muy bien! Sigue practicando.'; }
+  else { emoji = '💪'; msg = 'Sigue practicando, ¡vas mejorando!'; }
 
-    // Save progress
-    const learned = JSON.parse(localStorage.getItem('vocab_learned') || '{}');
-    learned[this.currentCategory] = Math.max(learned[this.currentCategory] || 0, this.practiceScore);
-    localStorage.setItem('vocab_learned', JSON.stringify(learned));
+  // Guardar progreso
+  const learned = JSON.parse(localStorage.getItem('vocab_learned') || '{}');
+  learned[this.currentCategory] = Math.max(learned[this.currentCategory] || 0, this.practiceScore);
+  localStorage.setItem('vocab_learned', JSON.stringify(learned));
 
-    // Add XP
-    App.addXP(xpEarned, `Vocabulario de ${cat.name} practicado`);
+  // Agregar XP
+  App.addXP(xpEarned, `Vocabulario de ${cat.name} practicado`);
 
-    // Check badge
-    if (pct === 100) {
-      const badgeKey = `vocab_${this.currentCategory}`;
-      if (!App.state.badges.includes(badgeKey)) {
-        App.state.badges.push(badgeKey);
-        App.saveState();
-        setTimeout(() => Toast.show(`🏅 ¡Insignia: ${cat.icon} Maestro de ${cat.name}!`, 'success'), 600);
-      }
+  // Insignia si perfecto
+  if (pct === 100) {
+    const badgeKey = `vocab_${this.currentCategory}`;
+    if (!App.state.badges.includes(badgeKey)) {
+      App.state.badges.push(badgeKey);
+      App.saveState();
+      setTimeout(() => Toast.show(`🏅 ¡Insignia: ${cat.icon} Maestro de ${cat.name}!`, 'success'), 600);
     }
+  }
 
-    document.getElementById('vocabPracticeContent').innerHTML = `
-      <div class="vocab-result">
-        <div class="vr-emoji">${emoji}</div>
-        <div class="vr-score">${this.practiceScore}/${total}</div>
-        <h3>${msg}</h3>
-        <p>Ganaste <strong style="color:var(--accent)">+${xpEarned} XP</strong></p>
-        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:24px">
-          <button class="btn-primary" onclick="Vocabulary.selectMode('${this.currentMode}')">Practicar de nuevo</button>
-          <button class="btn-ghost" onclick="Vocabulary.backToCategoryDetail()">Cambiar modo</button>
-          <button class="btn-ghost" onclick="Vocabulary.backToCategories()">Ver categorías</button>
-        </div>
+  document.getElementById('vocabPracticeContent').innerHTML = `
+    <div class="vocab-result">
+      <div class="vr-emoji">${emoji}</div>
+      <div class="vr-score">${this.practiceScore}/${total}</div>
+      <h3>${msg}</h3>
+      <p>Ganaste <strong style="color:var(--accent)">+${xpEarned} XP</strong></p>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:24px">
+        <button class="btn-primary" onclick="Vocabulary.selectMode('${this.currentMode}')">Practicar de nuevo</button>
+        <button class="btn-ghost" onclick="Vocabulary.backToCategoryDetail()">Cambiar modo</button>
+        <button class="btn-ghost" onclick="Vocabulary.backToCategories()">Ver categorías</button>
       </div>
-    `;
-  },
+    </div>
+  `;
+
+  // Mostrar modal de calificación
+  setTimeout(() => {
+    Ratings.showModal(
+      `vocab_${this.currentCategory}`,
+      `Vocabulario: ${cat.icon} ${cat.name}`,
+      cat.icon
+    );
+  }, 800);
+},
 
   backToCategoryDetail() {
     document.getElementById('vocabPractice').style.display = 'none';
